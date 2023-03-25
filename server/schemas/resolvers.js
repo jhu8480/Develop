@@ -31,43 +31,43 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-  },
-  addBook: async (parent, {authors, description, title, bookId, image, link}, context) => {
-    if (context.user) {
-      return User.findOneAndUpdate({_id: context.user._id}, {
-        $addToSet: {
-          savedBooks: {
-            authors,
-            description,
-            bookId,
-            image,
-            link,
-            title
-        }
-      }
-    }, {
-      new: true,
-      runValidators: true
-    })
-  }
-    throw new AuthenticationError('You need to be logged in!');
-  },
-  removeBook: async (parent, { bookId }, context) => {
-    if (context.user) {
-      return User.findOneAndUpdate(
-        { _id: context.user._id },
-        {
-          $pull: {
+    addBook: async (parent, {authors, description, title, bookId, image, link}, context) => {
+      if (context.user) {
+        return User.findOneAndUpdate({_id: context.user._id}, {
+          $addToSet: {
             savedBooks: {
-              bookId: bookId
+              authors,
+              description,
+              bookId,
+              image,
+              link,
+              title
+          }
+        }
+      }, {
+        new: true,
+        runValidators: true
+      })
+    }
+      throw new AuthenticationError('You need to be logged in!');
+    },
+    removeBook: async (parent, { bookId }, context) => {
+      if (context.user) {
+        return User.findOneAndUpdate(
+          { _id: context.user._id },
+          {
+            $pull: {
+              savedBooks: {
+                bookId: bookId
+              },
             },
           },
-        },
-        { new: true }
-      );
-    }
-    throw new AuthenticationError('You need to be logged in!');
-  },
+          { new: true }
+        );
+      }
+      throw new AuthenticationError('You need to be logged in!');
+    },
+  }
 };
 
 module.exports = resolvers;
